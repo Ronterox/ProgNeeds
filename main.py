@@ -11,17 +11,24 @@ x = np.array([i for i in range(y.size)])
 
 fig = plt.figure(figsize=(y.size, y.size))
 bars = plt.bar(x, y)
+step = 0
 
 
 def update(sort_step):
+    global step
     for rect, height in zip(bars, sort_step):
         rect.set_height(height)
-    print(sort_step)
+    print(f'Step {step}: {sort_step}')
+    step += 1
 
 
 def create_anim(sortmethod):
+    global step
+
     sort = np.array(list(sortmethod(y.copy())))
-    print("Sort's done")
+    print(f"\nSort {sortmethod.__name__} is done")
+
+    step = 0
 
     animation = anim.FuncAnimation(fig, update, frames=sort, repeat=False)
     animation.save(f'{sortmethod.__name__}.mp4', writer=anim.FFMpegWriter(fps=FPS))
@@ -52,15 +59,16 @@ def sort_selection(y) -> object:
         yield np.copy(y)
 
 
-# O(n^1.25)
+# O(n^1.40)
 def sort_insertion(y) -> object:
     yield y.copy()
     for i in range(y.size - 1):
         if y[i] > y[i + 1]:
             y[i], y[i + 1] = y[i + 1], y[i]
-            while i > 0 and y[i] < y[i - 1]:
-                y[i], y[i - 1] = y[i - 1], y[i]
-                i -= 1
+            j = i
+            while j > 0 and y[j] < y[j - 1]:
+                y[j], y[j - 1] = y[j - 1], y[j]
+                j -= 1
             yield y.copy()
 
 
