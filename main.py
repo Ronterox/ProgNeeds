@@ -22,6 +22,9 @@ def update(sort_step):
     step += 1
 
 
+""" TODO: comment about method"""
+
+
 def create_anim(sortmethod):
     global step
 
@@ -72,6 +75,47 @@ def sort_insertion(y) -> object:
             yield y.copy()
 
 
+def get_int(max):
+    import random
+    from time import time
+
+    random.seed(time())
+    return random.randint(0, max)
+
+
+def shuffle_for(y) -> object:
+    yield y.copy()
+    for i in reversed(range(y.size - 1)):
+        j = get_int(i)
+        y[i], y[j] = y[j], y[i]
+        yield y.copy()
+
+
+def shuffle_probability(y, val):
+    yield y.copy()
+    for i in range(y.size):
+        j, accumulator = 0, 0
+        while accumulator < val:
+            accumulator += y[j]
+            j = (j + 1) % y.size
+        y[i], y[j] = y[j], y[i]
+        yield y.copy()
+
+
+def shuffle_proportional(y) -> object:
+    val = get_int((y.size - 1) * (y.sum() - 1))
+    return shuffle_probability(y, val)
+
+
+def shuffle_inv_proportionality(y) -> object:
+    val = get_int(y.sum() - 1)
+    return shuffle_probability(y, val)
+
+
 create_anim(sort_bubble)
 create_anim(sort_selection)
 create_anim(sort_insertion)
+
+create_anim(shuffle_for)
+create_anim(shuffle_proportional)
+create_anim(shuffle_inv_proportionality)
