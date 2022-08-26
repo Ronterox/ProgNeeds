@@ -3,10 +3,10 @@ import matplotlib.animation as anim
 import numpy as np
 
 FPS = 15
-NUMBERS = 10
+ELEMENTS = 10
 
 np.random.seed(123)
-y = np.random.randint(0, 1000, size=(NUMBERS,))
+y = np.random.randint(0, 1000, size=(ELEMENTS,))
 x = np.array([i for i in range(y.size)])
 
 fig = plt.figure(figsize=(y.size, y.size))
@@ -75,6 +75,63 @@ def sort_insertion(y) -> object:
             yield y.copy()
 
 
+def quick_sort(y, low, high):
+    if low < high:
+        i = low
+        for j in range(low, high):
+            if y[j] <= y[high]:
+                y[j], y[i] = y[i], y[j]
+                i += 1
+                yield y.copy()
+        y[high], y[i] = y[i], y[high]
+
+        for j in quick_sort(y, low, i - 1): yield j
+
+        for j in quick_sort(y, i + 1, high): yield j
+
+
+# Worst O(n^2) best O(nLog(n))
+def sort_quick(y) -> object:
+    yield y.copy()
+    for i in quick_sort(y, 0, y.size - 1): yield i
+    yield y.copy()
+
+
+# O(nlog(n))
+def sort_merge(y) -> object:
+    if len(y) < 2: return
+
+    mid = len(y) // 2
+    left, right = y[:mid].copy(), y[mid:].copy()
+
+    sort_merge(left)
+    sort_merge(right)
+
+    i = j = k = 0
+
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            y[k] = left[i]
+            i += 1
+        else:
+            y[k] = right[j]
+            j += 1
+        k += 1
+        yield y.copy()
+
+    while i < len(left):
+        y[k] = left[i]
+        i += 1
+        k += 1
+        yield y.copy()
+
+    while j < len(right):
+        y[k] = right[j]
+        j += 1
+        k += 1
+        yield y.copy()
+
+
 def get_int(max):
     import random
     from time import time
@@ -115,6 +172,8 @@ def shuffle_inv_proportionality(y) -> object:
 create_anim(sort_bubble)
 create_anim(sort_selection)
 create_anim(sort_insertion)
+create_anim(sort_quick)
+create_anim(sort_merge)
 
 create_anim(shuffle_for)
 create_anim(shuffle_proportional)
