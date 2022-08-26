@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as anim
 import numpy as np
 
-FPS = 15
-ELEMENTS = 20
+FPS = 30
+ELEMENTS = 40
 
 np.random.seed(123)
 y = np.random.randint(0, 1000, size=(ELEMENTS,))
@@ -43,7 +43,7 @@ def sort_bubble(y) -> object:
             if y[j] > y[j + 1]:
                 y[j], y[j + 1] = y[j + 1], y[j]
                 swapped = False
-                yield np.copy(y)
+                yield y.copy()
 
         if swapped: break
 
@@ -56,7 +56,7 @@ def sort_selection(y) -> object:
         for j in range(i + 1, y.size):
             if y[j] < y[minval]: minval = j
         y[i], y[minval] = y[minval], y[i]
-        yield np.copy(y)
+        yield y.copy()
 
 
 # O(n^1.40)
@@ -87,6 +87,7 @@ def quick_sort(y, low, high):
         for j in quick_sort(y, i + 1, high): yield j
 
 
+# TODO: I must be outputting something wrong since anim takes more than insertion
 # Worst O(n^2) best O(nLog(n))
 def sort_quick(y) -> object:
     yield y.copy()
