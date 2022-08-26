@@ -3,7 +3,7 @@ import matplotlib.animation as anim
 import numpy as np
 
 FPS = 15
-ELEMENTS = 10
+ELEMENTS = 20
 
 np.random.seed(123)
 y = np.random.randint(0, 1000, size=(ELEMENTS,))
@@ -20,9 +20,6 @@ def update(sort_step):
         rect.set_height(height)
     print(f'Step {step}: {sort_step}')
     step += 1
-
-
-""" TODO: comment about method"""
 
 
 def create_anim(sortmethod):
@@ -100,12 +97,20 @@ def sort_quick(y) -> object:
 # O(nlog(n))
 def sort_merge(y) -> object:
     if len(y) < 2: return
+    yield y.copy()
 
     mid = len(y) // 2
     left, right = y[:mid].copy(), y[mid:].copy()
 
-    sort_merge(left)
-    sort_merge(right)
+    for i in sort_merge(left):
+        if len(i) == len(y):
+            yield i
+            break
+
+    for i in sort_merge(right):
+        if len(i) == len(y):
+            yield i
+            break
 
     i = j = k = 0
 
