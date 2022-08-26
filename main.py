@@ -154,6 +154,7 @@ def shuffle_for(y) -> object:
         yield y.copy()
 
 
+# TODO: Fix probability shuffles
 def shuffle_probability(y, val):
     yield y.copy()
     for i in range(y.size):
@@ -180,6 +181,8 @@ create_anim(sort_selection)
 create_anim(sort_insertion)
 create_anim(sort_quick)
 create_anim(sort_merge)
+
+y = list(sort_merge(y)).pop()
 
 create_anim(shuffle_for)
 create_anim(shuffle_proportional)
